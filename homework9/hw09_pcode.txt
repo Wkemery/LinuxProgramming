@@ -1,0 +1,78 @@
+hw09_pcode.txt
+Author: Wyatt Emery
+Date: NOV 07, 2016
+
+COSC 3750, Homework9
+
+This is the psuedocode for wyshell.c, homework 9
+-------------------------------------------------
+
+
+while get a line from stdin
+send line to scanner function once 
+continually send null to scanner function
+
+for all of these add an if current command is null, print error and break
+unless pipe flag is set
+
+
+for each token handle return type
+
+QUOTE_ERROR 96
+abandon current line of text
+
+ERROR_CHAR 97
+abandon current line of text
+
+SYSTEM_ERROR 98
+exit program
+
+EOL 99
+stop calling scanner function
+
+REDIR_OUT 100
+if cur comm does NOT have output redirected, redirect output to file
+set flag to save next var
+else abandon line print error
+
+REDIR_IN 101
+if cur comm does NOT have input redirected, redirect input from file
+set flag to save next var
+else abandon line print error
+
+APPEND_OUT 102
+if cur comm does NOT have output redirected, redirect output to file
+set flag to save next var
+else abandon line print error
+set append flag
+
+REDIR_ERR 103
+if cur comm does NOT have error redirected, redirect error to file
+set flag to save next var
+else abandon line print error
+
+APPEND_ERR 104
+if cur comm does NOT have error redirected, redirect error to file
+set flag to save next var
+else abandon line print error
+set append flag
+
+REDIR_ERR_OUT 105
+if cur comm does NOT have error redirected, redirect error to output
+else abandon line print error
+
+SEMICOLON 106
+stop adding to current command start new command
+
+PIPE 107
+if current command does not have output redirected, redirect output to next command
+redirect input of next command from output of this command
+set pipe flag
+
+AMP 108
+set run in background flag
+
+WORD 200
+copy value in lexeme to list of args for current command
+
+

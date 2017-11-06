@@ -1,0 +1,64 @@
+hw12_pcode.txt
+Author: Wyatt Emery
+Date: DEC 3, 2016
+
+COSC 3750, Homework12
+
+This is the psuedocode for mmult.c, homework 12
+-------------------------------------------------
+
+Validate input first
+
+set index value such that it always points to first matrix
+
+if 3 arguments compute matrix multiply using no threads
+	open matrices
+	set up indeces for each spot in final matrix
+	calculate size of final matrix
+	if invalid perror and exit
+	calculate each postiion in matrix in order
+	write out after computation
+
+	after all that close the output file	
+
+else if 4 arguments	compute matrix multiply with threads
+	store number of threads
+	if invalid perror and exit
+	open matrix files
+	calculate size of final matrix
+	if invalif perror and exit
+	create two indeces that represent spots in final matrix
+	create and initialize mutex for row column vars
+	create and initialize mutex for output file
+	create and initialize condition variable for output file
+
+	create all threads
+	
+loop:
+	lock outifle mutex
+	wait on cv
+	write out data
+	unlock outifle matrix
+
+pthread join all threads
+close all files
+		
+
+else 
+	print error and exit
+
+threadfunction
+lock row/column mutex
+retrive its assignment and update row/column vars
+unlock mutex
+
+read in rows and columns and do matrix multiply
+
+only signal cv for main thread after all previous threads have signaled
+use mutex for this. ensures all threads signal main in order
+eg 1,1 must have signaled before 2,1 which must signal before 3,1 and so on
+going to need vars for completed row and columns
+
+
+
+

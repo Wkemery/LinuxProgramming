@@ -1,0 +1,51 @@
+#!/bin/bash
+#Wyatt Emery
+#modify
+
+date_time=$(date +"%A, %b %d, %Y: %H%M")
+
+#functions
+edit() 
+{
+   ed -s "$1" 2> /dev/null <<- _EOF_
+	\$a
+	Modified on: $date_time
+	Modified by: Wyatt Emery
+	.
+	w
+	1m2
+	w
+	,s/Gradez/Grades/g
+	w
+	q
+_EOF_
+}
+
+if [ "$#" -gt "0" ]
+then
+
+while [ "$1" != "" ]; do
+
+   filename=$1
+filetype="$(file "$filename" | sed -n 's/.*\(ASCII text\).*/edit/p')"   
+   
+   if [ "$filetype" = "edit" ]
+   then
+	edit "$filename"
+   elif [ -d "$filename" ]
+   then
+	echo "modify: $filename, is a directory."
+   elif [ -x $filename ]
+   then
+	echo "modify: $filename, cannot edit executables."
+   else
+	echo "modify: $filename, filetype not supported."
+   fi
+
+   shift
+done
+
+else
+   echo "usage: modify filename [filename ...]"
+fi
+

@@ -1,0 +1,160 @@
+/*
+wycat.c
+Author: Wyatt Emery
+Date: Sep 30, 2016
+
+COSC 3750, Homework4
+
+Description
+*/
+
+#include<stdio.h>
+#include<errno.h>
+#include<string.h>
+#include<unistd.h>
+#include<stdlib.h>
+#include<errno.h>
+#include<sys/stat.h>
+#include<dirent.h>
+
+
+void listDir(char* dir, int option_n, int option_h);
+void longList(char* filename, int option_n, int option_h);
+void longListcwd(int option_n, int option_h);
+
+int main (int argc, char** argv)
+{
+    int option_n=0;
+    int option_h=0;
+    if(argc < 2)
+    {
+        //No Arguments, long list cwd
+        longListcwd(0,0);
+    }
+    else
+    {
+        int processOptions=1;
+        int processParameters=0;
+        int i = 1;
+        for(; i<argc; i++) //for every argument
+        {
+            if(processOptions)
+            {
+                //printf("%s", "process options");
+                //if current arg starts with -
+                if(argv[i][0]=='-')
+                {
+                    //printf("%s", "in option if");
+                    //process every option in current arg
+                    int j=1;
+                    char currentOption = argv[i][j];
+                    while(currentOption!='\0')
+                    {
+                        if(currentOption=='n') option_n=1;
+                        else if(currentOption=='h') option_h=1;
+                        else
+                        {
+                            errno=EINVAL;
+                            perror("That was not a valid option: Exiting now");
+                            exit(EXIT_FAILURE);
+                        }
+                        j++;
+                        currentOption=argv[i][j];
+                    }
+                    if(option_h) printf("%s\n", "option_h");
+                    if(option_n) printf("%s\n", "option_n");
+                }
+                //Done processing Options
+                else
+                {
+                    processOptions=0;
+                    processParameters=1;
+                }
+            }
+            //process "arguments"
+            if(processParameters)
+            {
+                //get stats on current argument
+                struct stat fileStats;
+                int statReturn=stat(argv[i], &fileStats);
+                if(statReturn==0)
+                {
+                    //if current arg is a dir
+
+                    if ((fileStats.st_mode & S_IFMT) == S_IFDIR)
+                    {
+                        //long list items in dir
+                        printf("%s\n", "listing dir");
+                        listDir(argv[i], option_n, option_h);
+                    }
+                    else
+                    {
+                        //long list info on current arg
+                        printf("%s\n", "listing file or link");
+                        longList(argv[i], option_n, option_h);
+                    }
+                }
+                else //error opening file
+                {
+                    char error[100]="unable to retrieve stats on ";
+                    strcat(error,argv[i]);
+                    perror(error);
+                }
+            }
+        }
+        if(!processParameters)
+        {
+            longListcwd(option_h, option_n);
+        }
+    }
+    return 0;
+}
+
+void longList(char* filename, int option_n, int option_h)
+{
+	printf("%s%s%d%d\n", "Function: LongList executed with vars: ", filename, option_n, option_h);
+    struct stat fileStats;
+    int statReturn=stat(filename, &fileStats);
+    //if stat opened file successfully
+    if(statReturn==0)
+    {
+        //print permissions
+        //if option-n print username
+        //if option-h print user id
+        //print last modified time
+        //print filename
+        
+    }
+}
+
+void listDir(char* dir, int option_n, int option_h)
+{
+    struct dirent *dirEntry;
+    DIR *directory=opendir(dir);
+    if(directory!=NULL)
+    {
+        dirEntry=readdir(directory);
+        while(dirEntry!=NULL)
+        {
+            //printf("%s\n", dirEntry->d_name);
+            if((strcmp(dirEntry->d_name, ".")!=0) && (strcmp(dirEntry->d_name, "..")!=0))
+            {
+                 longList(dirEntry->d_name,option_n,option_h);
+            }
+            
+           dirEntry=readdir(directory);
+        }
+        closedir(directory);
+    }
+    else perror("Could not open directory");
+    
+}
+
+void longListcwd(int option_n, int option_h)
+{
+    char path[4096];
+    memset(path, '\0', sizeof path);
+    getcwd(path, sizeof path);
+    printf("%s\n", path);
+    longList(path, option_n, option_h);
+}

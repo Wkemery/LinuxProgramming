@@ -1,0 +1,21 @@
+##############################
+# Makefile
+# Author: Wyatt Emery
+# Date: NOV 15, 2016
+#
+# COSC 3750, Homework 10
+# 
+# this will compile and generate an executable from wyshell.c
+##############################
+
+CC=gcc
+CFLAGS=-ggdb -Wall
+
+.PHONY: clean
+
+
+wyls: wyshell.c ShellFunctions.c ShellFunctions.h wyscanner.c wyscanner.h
+	${CC} ${CFLAGS} wyshell.c wyscanner.c ShellFunctions.c -o wyshell
+
+clean: 
+	/bin/rm -f *.o wyshell

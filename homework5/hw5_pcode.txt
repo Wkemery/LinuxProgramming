@@ -1,0 +1,63 @@
+hw5_pcode.txt
+Author: Wyatt Emery
+Date: Sep 30, 2016
+
+COSC 3750, Homework5
+
+This is the psuedocode for wyls.c, homework 5
+
+#support -n, -h options
+#options come first
+#-h option show size in bytes
+#-n option show uid and gid instead of username and group name
+#will do a long listing
+
+if there are no arguments:
+	long list the current directory
+else:
+for every argument:
+	if processing options:
+		if current argument starts with -
+			process every option in curent arg
+				set flags for option(s)
+				if option not supported print error message
+				exit program
+		else done processing options
+			if this is the last argument long list current directory
+			else process arguments 
+	
+	else: process arguments
+		get stats on current argument
+		if got stats successfully:
+			if current argument is a directory
+				long list contents of directory
+			else
+				long list current arg
+		else:
+			print error message
+		
+function listdir(directory name, option-n, option-h)
+	open directory
+	if directory is open:
+	read and record files in directory
+	longlist every file in directory except . and ..
+	close directory	
+	else
+		print error could not open directory
+	
+function longlist(file Stats, option-n, option-h)
+	print permissions in rwx format
+	if option-n
+		print username
+		print group name
+	else
+		print uid
+		print gid
+	if(option-h)
+		print size human readable
+	else
+		print size
+	print last modified date
+	print filename
+		
+

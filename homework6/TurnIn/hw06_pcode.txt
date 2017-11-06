@@ -1,0 +1,75 @@
+hw06_pcode.txt
+Author: Wyatt Emery
+Date: OCT 7, 2016
+
+COSC 3750, Homework6
+
+This is the pseudocode for wytar.c, homework 6
+-------------------------------------------------
+
+if there are no arguments, print an error and exit
+
+else there are arguments, process them
+for every option:
+    if current argument starts with a "-", its an option
+    process every option in the current argument(set flags for options)
+    if current option is -f, take note of next argument as the filename to be created or extracted
+    skip next argument.
+    if option is not supported, print error message and exit
+    if current argument did not start with a dash, I'm done processing options, process parameters
+
+if option c and option x were set, print error and exit program
+if neither option x nor option c were set, exit program
+
+else if creating a tar file(option -c):
+if there are arguments to be written to tar file:
+create target tar file
+open tar file
+for every parameter(the remaining arguments):
+	call function to create a tar header from file
+    if its a directory, procces directory with function
+    else call function to write out file to tar
+after processing all arguments write out two 512 byte blocks of \0 characters
+close file
+
+else if extracting a tar file (option -x):
+open tar file
+for every record:
+call function to construct tar header from tar file's first 512 bytes
+call function to create file based on tar header data
+read in 512 bytes at a time and write out until you have written the original size of the file in bytes
+
+function: create tar header from file
+get stats on file
+create tar header based on stats from file
+calculate checksum
+
+function: construct tar header from tar file
+read 100 bytes, set to name
+read 8 bytes, set to mode
+read 8 bytes, set to uid
+...
+
+function: create file based on tar header data
+create directory for file if needed
+create file
+set permissions
+
+function:write out file to tar 
+call function to create tar header from file
+    write the tar header to target tar file
+    write file data to tar file
+        open file to be written out
+        read in data from file in 512 byte blocks
+        write out data to open tar file in 512 byte blocks, except last block which will be less than 512
+        padded with \0 characters to 512 bytes
+
+function: process directory
+open directory
+read directory
+for all items in directory except . and ..:
+if its a directory process directory
+else write file out to target
+close directory
+
+

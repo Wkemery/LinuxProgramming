@@ -1,0 +1,41 @@
+hw09_pcode.txt
+Author: Wyatt Emery
+Date: NOV 07, 2016
+
+COSC 3750, Homework9
+
+This is the psuedocode for wyshell.c, homework 9
+-------------------------------------------------
+
+wait on any children after printing prompt
+ParseInput
+call execAllCommands(pointer to start node)
+
+
+before program exits, wait on children if any
+
+
+
+Function: execAllCommands(StartNode)
+this will be the top level execution funtion. will handle making sure all 
+commands in linked list get executed.
+{
+for every command:
+call function execCommand(pointer to command)
+if(run in background)
+	add child process to returned from execCommand to child process list
+else
+	wait on child process
+
+
+}
+
+Function: execCommand(pointer to command)
+{
+create arg list from command name and args
+fork()
+check for fork failure
+if child
+	execute command with arglist
+	check for execvp failure
+}
